@@ -18,7 +18,7 @@ namespace OneBeyondApi.Services
             _borrowerRepository = borrowerRepository;
         }
 
-        public Task<Dictionary<Borrower, List<string>>> GetOnLoanDetails()
+        public Dictionary<Borrower, List<string>> GetOnLoanDetails()
         {
             var onLoan = new Dictionary<Borrower, List<string>>();
             var bookStock = _catalogueRepository.GetCatalogue();
@@ -26,7 +26,7 @@ namespace OneBeyondApi.Services
             if (bookStock is null)
             {
                 _logger.LogWarning("No books in catalogue");
-                return Task.FromResult(onLoan);
+                return onLoan;
             }
 
             var booksOnLoan = bookStock.Where(x => x.OnLoanTo is not null);
@@ -34,7 +34,7 @@ namespace OneBeyondApi.Services
             if (booksOnLoan.Count() == 0)
             {
                 _logger.LogInformation("No books are on loan");
-                return Task.FromResult(onLoan);
+                return onLoan;
             }
 
             onLoan = bookStock
@@ -47,7 +47,7 @@ namespace OneBeyondApi.Services
                           .ToList()
                 );
 
-            return Task.FromResult(onLoan);
+            return onLoan;
         }
     }
 }

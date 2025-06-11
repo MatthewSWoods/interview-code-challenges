@@ -26,5 +26,12 @@ namespace OneBeyondApi.Controllers
         {
             return _loanService.GetOnLoanDetails();
         }
+
+        [HttpPut]
+        [Route("Return")]
+        public Task ReturnBook(Book book)
+        {
+            return Task.FromResult("a");
+        }
     }
 }

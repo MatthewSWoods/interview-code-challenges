@@ -4,6 +4,6 @@ namespace OneBeyondApi.Services
 {
     public interface ILoanService
     {
-        public Task<List<OnLoan>> GetOnLoanDetails();
+        public Dictionary<Borrower, List<string>> GetOnLoanDetails();
     }
 }
