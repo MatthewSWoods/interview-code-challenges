@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneBeyondApi.Model;
+using System.Text.Json;
 
 namespace OneBeyondApi.DataAccess
 {
@@ -43,6 +44,34 @@ namespace OneBeyondApi.DataAccess
                     
                 return list.ToList();
             }
+        }
+
+        public BookStock ReturnBookStock(BookStock returnedBookStock)
+        {
+            using (var context = new LibraryContext())
+            {
+                try
+                {
+                    var bookStock = context.Catalogue.First(x => x.Book == returnedBookStock.Book);
+                    Console.WriteLine("BOOK STOCK TO RETURN: {0}", JsonSerializer.Serialize(bookStock));
+                    if (bookStock is not null)
+                    {
+                        bookStock.Book = returnedBookStock.Book;
+                        bookStock.LoanEndDate = null;
+                        bookStock.OnLoanTo = null;
+                        var affected = context.SaveChanges();
+                        Console.WriteLine($"SaveChanges affected {affected} rows");
+
+                        return bookStock;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving changes: {ex.Message}");
+                }
+            }
+
+            return returnedBookStock;
         }
     }
 }

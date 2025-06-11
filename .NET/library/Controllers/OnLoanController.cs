@@ -28,10 +28,11 @@ namespace OneBeyondApi.Controllers
         }
 
         [HttpPut]
-        [Route("Return")]
-        public Task ReturnBook(Book book)
+        [Route("ReturnBook")]
+        public Task ReturnBook(string bookName, string borrowerName)
         {
-            return Task.FromResult("a");
+            _loanService.ReturnBook(bookName,borrowerName);
+            return Task.CompletedTask;
         }
     }
 }
