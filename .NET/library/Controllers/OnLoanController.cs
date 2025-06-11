@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OneBeyondApi.DataAccess;
 using OneBeyondApi.Model;
+using OneBeyondApi.Services;
 
 namespace OneBeyondApi.Controllers
 {
@@ -9,21 +10,21 @@ namespace OneBeyondApi.Controllers
     public class OnLoanController : ControllerBase
     {
         private readonly ILogger<OnLoanController> _logger;
-        private readonly IBorrowerRepository _borrowerRepository;
+        private readonly ILoanService _loanService;
 
         public OnLoanController(
             ILogger<OnLoanController> logger,
-            IBorrowerRepository borrowerRepository)
+            ILoanService loanService)
         {
             _logger = logger;
-            _borrowerRepository = borrowerRepository;
+            _loanService = loanService;
         }
 
         [HttpGet]
         [Route("GetOnLoan")]
-        public List<Borrower> GetOnLoan()
+        public Dictionary<Borrower, List<string>> GetOnLoan()
         {
-            throw new NotImplementedException();
+            return _loanService.GetOnLoanDetails();
         }
     }
 }
