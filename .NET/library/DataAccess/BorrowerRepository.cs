@@ -26,5 +26,22 @@ namespace OneBeyondApi.DataAccess
                 return borrower.Id;
             }
         }
+
+        public decimal FineBorrower(Borrower borrower, decimal amount)
+        {
+            using (var context = new LibraryContext())
+            {
+                var borrowerToFine = context.Borrowers.Where(b => b.Id == borrower.Id).First();
+                if (borrowerToFine is not null)
+                {
+                    borrowerToFine.OutstandingFines = borrowerToFine.OutstandingFines + amount;
+                    context.SaveChanges();
+
+                    return borrowerToFine.OutstandingFines;
+                }
+            }
+
+            return 0;
+        }
     }
 }

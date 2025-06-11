@@ -81,12 +81,32 @@ namespace OneBeyondApi.Services
                 _logger.LogWarning("Unable to match return details to books on Loan");
             }
 
+            // For our fine model we are simply going to charge £2 for every week overdue e.g 0-1 weeks = £2, 1-2 weeks = £4 etc
+            LevyFine(returnedBookStock!);
+
             _logger.LogInformation("Returning Book: {0}", JsonSerializer.Serialize(returnedBookStock));
             var updatedBookStock = _catalogueRepository.ReturnBookStock(returnedBookStock!);
             _logger.LogInformation("Returned Book: {0}", JsonSerializer.Serialize(updatedBookStock));
 
             return Task.CompletedTask;
 
+        }
+
+        public Task LevyFine(BookStock returnedBookStock)
+        {
+            var dueDate = returnedBookStock.LoanEndDate;
+            if (dueDate < DateTime.Now && dueDate is not null)
+            {
+                var overdueTimeSpan = (TimeSpan)(DateTime.Now - dueDate);
+                var weeksOverdue = Math.Ceiling(overdueTimeSpan.TotalDays / 7);
+                var fineToLevy = (decimal)weeksOverdue * 2;
+
+                _logger.LogInformation("User Id {0} will be fined £{1}", returnedBookStock?.OnLoanTo?.Id, fineToLevy);
+                var totalFines = _borrowerRepository.FineBorrower(returnedBookStock?.OnLoanTo!, fineToLevy);
+                _logger.LogInformation("User Id {0} has total fines £{1}", returnedBookStock?.OnLoanTo?.Id, totalFines);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
