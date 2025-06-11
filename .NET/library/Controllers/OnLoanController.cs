@@ -22,7 +22,7 @@ namespace OneBeyondApi.Controllers
 
         [HttpGet]
         [Route("GetOnLoan")]
-        public Dictionary<Borrower, List<string>> GetOnLoan()
+        public List<BorrowerLoans> GetOnLoan()
         {
             return _loanService.GetOnLoanDetails();
         }
